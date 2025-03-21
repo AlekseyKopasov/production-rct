@@ -24,7 +24,10 @@ module.exports = {
   ],
   rules: {
     'react/jsx-indent': [2, 2],
-    'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.tsx'] }],
+    'react/jsx-filename-extension': [
+      2,
+      { extensions: ['.js', '.jsx', '.tsx'] },
+    ],
     'react/jsx-indent-props': [2, 2],
     indent: [2, 2],
     'import/no-unresolved': 'off',
@@ -38,7 +41,13 @@ module.exports = {
     'import/extensions': 'off',
     'import/no-extraneous-dependencies': 'off',
     'no-underscore-dangle': 'off',
-    'i18next/no-literal-string': ['error', { markupOnly: true }],
+    'i18next/no-literal-string': [
+      'error', 
+      { 
+        markupOnly: true,
+        "ignore": ["/"] // Игнорировать строки, содержащие URL
+      },
+    ],
     'max-len': ['error', { ignoreComments: true }],
   },
   globals: {
