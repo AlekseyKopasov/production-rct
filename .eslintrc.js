@@ -46,6 +46,7 @@ module.exports = {
       {
         markupOnly: true,
         ignore: ['/'], // Игнорировать строки, содержащие URL
+        ignoreAttribute: ['data-testid'],
       },
     ],
     'max-len': ['error', { ignoreComments: true, code: 120 }],
@@ -53,4 +54,10 @@ module.exports = {
   globals: {
     __IS_DEV__: true,
   },
+  overrides: [{
+    files: ['**/src/**/*.test.{ts,tsx}'],
+    rules: {
+      'i18next/no-literal-string': 'off',
+    },
+  }],
 };
