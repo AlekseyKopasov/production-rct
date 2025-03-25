@@ -4,11 +4,7 @@ module.exports = {
     es2021: true,
     jest: true,
   },
-  extends: [
-    'plugin:react/recommended',
-    'airbnb',
-    'plugin:i18next/recommended',
-  ],
+  extends: ['plugin:react/recommended', 'airbnb', 'plugin:i18next/recommended',],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -45,8 +41,8 @@ module.exports = {
       'error',
       {
         markupOnly: true,
-        ignore: ['/'], // Игнорировать строки, содержащие URL
-        ignoreAttribute: ['data-testid'],
+        // ignore: ['/'], // Игнорировать строки, содержащие URL
+        ignoreAttribute: ['data-testid', 'to'],
       },
     ],
     'max-len': ['error', { ignoreComments: true, code: 120 }],
