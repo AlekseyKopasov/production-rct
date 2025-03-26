@@ -1,0 +1,19 @@
+.Button {
+    cursor: pointer;
+}
+
+.clear {
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    color: var(--primary-color);
+}
+
+.outline {
+  background-color: transparent;
+  color: var(--primary-color);
+  padding: 10px 20px;
+  border: 1px solid var(--primary-color);
+  border-radius: 5px;
+}
