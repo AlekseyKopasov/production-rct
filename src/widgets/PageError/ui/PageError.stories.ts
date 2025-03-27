@@ -9,9 +9,7 @@ const meta: Meta<typeof PageError> = {
   },
 
   tags: ['autodocs'],
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+  argTypes: {},
 
   // args: { onClick: fn() },
 };

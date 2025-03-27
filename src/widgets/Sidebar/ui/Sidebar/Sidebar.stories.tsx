@@ -12,9 +12,7 @@ const meta: Meta<typeof Sidebar> = {
   },
 
   tags: ['autodocs'],
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+  argTypes: {},
 
   // args: { onClick: fn() },
 };

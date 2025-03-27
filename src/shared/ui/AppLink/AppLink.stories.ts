@@ -9,9 +9,7 @@ const meta: Meta<typeof AppLink> = {
   },
 
   tags: ['autodocs'],
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+  argTypes: {},
 
   args: { to: '/' },
 };

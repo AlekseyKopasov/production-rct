@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ThemeSwitcher, ThemeSwitcherTheme } from './ThemeSwitcher';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 const meta: Meta<typeof ThemeSwitcher> = {
   title: 'shared/ThemeSwitcher',
@@ -9,11 +9,9 @@ const meta: Meta<typeof ThemeSwitcher> = {
   },
 
   tags: ['autodocs'],
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+  argTypes: {},
 
-  args: { to: '/' },
+  args: {},
 };
 
 export default meta;

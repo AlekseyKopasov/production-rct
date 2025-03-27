@@ -9,11 +9,9 @@ const meta: Meta<typeof NotFoundPage> = {
   },
 
   tags: ['autodocs'],
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+  argTypes: {},
 
-  args: { to: '/' },
+  args: {},
 };
 
 export default meta;

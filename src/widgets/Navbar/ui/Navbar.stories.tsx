@@ -9,9 +9,7 @@ const meta: Meta<typeof Navbar> = {
   },
 
   tags: ['autodocs'],
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+  argTypes: {},
 
   // args: { onClick: fn() },
 };
