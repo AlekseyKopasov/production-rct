@@ -23,7 +23,7 @@ jobs:
 
       # Добавляем установку TypeScript и ts-node
       - name: Install TypeScript dependencies
-        run: npm install -D typescript ts-node @types/node
+        run: npm install -D typescript ts-node @types/node webpack webpack-cli
 
       # Проверяем структуру файлов (для отладки)
       - name: Check project structure
