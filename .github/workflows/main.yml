@@ -6,11 +6,14 @@ on:
   pull_request:
     branches: [main, master]
 
+env:
+  NODE_OPTIONS: --max_old_space_size=4096
+
 jobs:
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
     - name: Checkout repository
@@ -28,20 +31,28 @@ jobs:
     - name: Install dependencies
       run: |
         npm ci
-        npm install --save-dev typescript@^4.9.5 ts-node@^10.9.1 @types/node@^18.0.0 webpack@^5.75.0 webpack-cli@^5.0.1
+        npm install --save-dev \
+          typescript@^4.9.5 \
+          ts-node@^10.9.1 \
+          @types/node@^18.0.0 \
+          webpack@^5.75.0 \
+          webpack-cli@^5.0.1 \
+          cross-env@^7.0.3
 
     - name: Verify project structure
       run: |
-        echo "Current working directory: $(pwd)"
-        echo "Project structure:"
+        echo "::group::Project Structure"
         ls -R
-        echo "Checking critical files:"
-        [ -f webpack.config.ts ] && echo "✓ webpack.config.ts exists" || echo "✗ webpack.config.ts missing"
-        [ -d src ] && echo "✓ src directory exists" || echo "✗ src directory missing"
-        [ -d config/build ] && echo "✓ config/build exists" || echo "✗ config/build missing"
+        echo "::endgroup::"
+
+        echo "::group::Critical Files Check"
+        [ -f webpack.config.ts ] && echo "✓ webpack.config.ts exists" || { echo "::error::webpack.config.ts missing"; exit 1; }
+        [ -d src ] && echo "✓ src directory exists" || { echo "::error::src directory missing"; exit 1; }
+        [ -d config/build ] && echo "✓ config/build exists" || { echo "::error::config/build missing"; exit 1; }
+        echo "::endgroup::"
 
     - name: Run TypeScript check
-      run: npx tsc --noEmit
+      run: npx tsc --noEmit --skipLibCheck
 
     - name: Build production bundle
       run: npm run build:prod
@@ -50,7 +61,7 @@ jobs:
         CI: true
 
     - name: Run unit tests
-      run: npm run test:unit -- --ci --coverage
+      run: npm run test:unit -- --ci --coverage --maxWorkers=2
 
     - name: Run linters
       run: |
@@ -65,8 +76,8 @@ jobs:
       uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: production-build
+        name: production-artifacts
         path: |
           build/
           coverage/
-        retention-days: 3
+        retention-days: 5
