@@ -3,12 +3,17 @@ import path from 'path';
 import { buildWebpackConfig } from './config/build/buildWebpackConfig';
 import { BuildEnv, BuildPaths } from './config/build/types/config';
 
+// Для NodeJS-специфичных переменных
+declare const __dirname: string;
+
 require('ts-node').register({
   transpileOnly: true,
   compilerOptions: {
     module: 'commonjs',
   },
 });
+
+// require('ts-node/register');
 
 export default (env: BuildEnv) => {
   const paths: BuildPaths = {
@@ -24,7 +29,7 @@ export default (env: BuildEnv) => {
   const isDev = mode === 'development';
 
   const config: webpack.Configuration = buildWebpackConfig({
-    mode,
+    mode: env.mode || 'development',
     paths,
     isDev,
     port: PORT,

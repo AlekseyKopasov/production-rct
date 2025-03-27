@@ -1,49 +1,72 @@
-name: linting, testing, building
+name: CI/CD Pipeline
+
 on:
   push:
-    branches: [master]
+    branches: [main, master]
   pull_request:
-    branches: [master]
+    branches: [main, master]
+
 jobs:
-  pipeline:
+  build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
+    timeout-minutes: 15
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
-      - name: Install dependencies
-        run: |
-          npm install
-          npm run build:prod
-        env:
-          NODE_ENV: production
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: 'package-lock.json'
 
-      # Добавляем установку TypeScript и ts-node
-      - name: Install TypeScript dependencies
-        run: npm install -D typescript ts-node @types/node webpack webpack-cli
+    - name: Install dependencies
+      run: |
+        npm ci
+        npm install --save-dev typescript@^4.9.5 ts-node@^10.9.1 @types/node@^18.0.0 webpack@^5.75.0 webpack-cli@^5.0.1
 
-      # Проверяем структуру файлов (для отладки)
-      - name: Check project structure
-        run: ls -R config/
+    - name: Verify project structure
+      run: |
+        echo "Current working directory: $(pwd)"
+        echo "Project structure:"
+        ls -R
+        echo "Checking critical files:"
+        [ -f webpack.config.ts ] && echo "✓ webpack.config.ts exists" || echo "✗ webpack.config.ts missing"
+        [ -d src ] && echo "✓ src directory exists" || echo "✗ src directory missing"
+        [ -d config/build ] && echo "✓ config/build exists" || echo "✗ config/build missing"
 
-      # Сначала запускаем линтинг
-      - name: Linting TypeScript
-        run: npm run lint:ts
+    - name: Run TypeScript check
+      run: npx tsc --noEmit
 
-      - name: Linting SCSS
-        run: npm run lint:scss
+    - name: Build production bundle
+      run: npm run build:prod
+      env:
+        NODE_ENV: production
+        CI: true
 
-      # Затем тесты
-      - name: Unit testing
-        run: npm run test:unit
+    - name: Run unit tests
+      run: npm run test:unit -- --ci --coverage
 
-      # И только потом сборку
-      - name: Build production project
-        run: npm run build:prod
+    - name: Run linters
+      run: |
+        npm run lint:ts
+        npm run lint:scss
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      if: success()
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: production-build
+        path: |
+          build/
+          coverage/
+        retention-days: 3
