@@ -1,75 +1,33 @@
-name: CI/CD Pipeline
-
+name: linting, testing, building
 on:
   push:
-    branches: [main, master]
+    branches: [ master ]
   pull_request:
-    branches: [main, master]
-
-env:
-  NODE_OPTIONS: --max_old_space_size=4096
-
+    branches: [ master ]
 jobs:
-  build-and-test:
-    name: Build and Test
+  pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    strategy:
+      matrix:
+        node-version: [ 17.x ]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18.x
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: |
-        npm ci
-        npm install --save-dev \
-          typescript@^4.9.5 \
-          ts-node@^10.9.1 \
-          @types/node@^18.0.0 \
-          webpack@^5.75.0 \
-          webpack-cli@^5.0.1 \
-          cross-env@^7.0.3
-
-    - name: Verify project structure
-      run: |
-        echo "Project structure:"
-        ls -R
-        [ -f webpack.config.ts ] || { echo "webpack.config.ts missing"; exit 1; }
-        [ -d src ] || { echo "src directory missing"; exit 1; }
-
-    - name: Run TypeScript check
-      run: npx tsc --noEmit --skipLibCheck
-
-    - name: Build production bundle
-      run: npm run build:prod
-      env:
-        NODE_ENV: production
-        CI: true
-
-    - name: Run unit tests
-      run: npm run test:unit -- --ci --coverage
-
-    - name: Run linters
-      run: |
-        npm run lint:ts
-        npm run lint:scss
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      if: success()
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: production-artifacts
-        path: |
-          build/
-          coverage/
-        retention-days: 5
+      - uses: actions/checkout@v2
+      - name: Staring Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: install modules
+        run: npm install
+      - name: build production project
+        run: npm run build:prod
+      - name: linting typescript
+        run: npm run lint:ts
+      - name: linting css
+        run: npm run lint:scss
+      - name: unit testing
+        run: npm run test:unit
+      - name: build storybook
+        run: npm run storybook:build
+      - name: screenshot testing
+        run: npm run test:ui:ci

@@ -1,58 +1,40 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 
+import { ThemeDecorator } from 'shared/config/storybook/ThemeDecorator/ThemeDecorator';
+import { Theme } from 'app/providers/ThemeProvider';
 import { Button, ThemeButton } from './Button';
 
-const meta: Meta<typeof Button> = {
-  title: 'shared/Button',
-  component: Button,
-  parameters: {
-    layout: 'centered',
-  },
+export default {
+    title: 'shared/Button',
+    component: Button,
+    argTypes: {
+        backgroundColor: { control: 'color' },
+    },
+} as ComponentMeta<typeof Button>;
 
-  tags: ['autodocs'],
-  argTypes: {},
+const Template: ComponentStory<typeof Button> = (args) => <Button {...args} />;
 
-  // args: { onClick: fn() },
-};
-
-export default meta;
-
-type Story = StoryObj<typeof Button>;
-
-export const Outline: Story = {
-  args: {
+export const Primary = Template.bind({});
+Primary.args = {
     children: 'Text',
-    theme: ThemeButton.OUTLINE,
-  },
-  parameters: {
-    theme: 'light', // Передаём тему через параметры
-  },
-};
-export const OutlineDark: Story = {
-  args: {
-    children: 'Text',
-    theme: ThemeButton.OUTLINE,
-  },
-  parameters: {
-    theme: 'dark', // Передаём тему через параметры
-  },
 };
 
-export const Clear: Story = {
-  args: {
+export const Clear = Template.bind({});
+Clear.args = {
     children: 'Text',
     theme: ThemeButton.CLEAR,
-  },
-  parameters: {
-    theme: 'light', // Передаём тему через параметры
-  },
 };
-export const ClearDark: Story = {
-  args: {
+
+export const Outline = Template.bind({});
+Outline.args = {
     children: 'Text',
-    theme: ThemeButton.CLEAR,
-  },
-  parameters: {
-    theme: 'dark', // Передаём тему через параметры
-  },
+    theme: ThemeButton.OUTLINE,
 };
+
+export const OutlineDark = Template.bind({});
+OutlineDark.args = {
+    children: 'Text',
+    theme: ThemeButton.OUTLINE,
+};
+OutlineDark.decorators = [ThemeDecorator(Theme.DARK)];

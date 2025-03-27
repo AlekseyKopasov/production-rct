@@ -4,7 +4,6 @@
 @import "themes/dark";
 
 .app {
-    width: 100vw;
     font: var(--font-m);
     background: var(--bg-color);
     color: var(--primary-color);
@@ -16,6 +15,6 @@
 }
 
 .page-wrapper {
-    padding: 20px;
     flex-grow: 1;
+    padding: 20px;
 }
