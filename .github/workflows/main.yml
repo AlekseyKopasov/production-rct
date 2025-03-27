@@ -18,15 +18,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 18.x
         cache: 'npm'
-        cache-dependency-path: 'package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -41,15 +38,10 @@ jobs:
 
     - name: Verify project structure
       run: |
-        echo "::group::Project Structure"
+        echo "Project structure:"
         ls -R
-        echo "::endgroup::"
-
-        echo "::group::Critical Files Check"
-        [ -f webpack.config.ts ] && echo "✓ webpack.config.ts exists" || { echo "::error::webpack.config.ts missing"; exit 1; }
-        [ -d src ] && echo "✓ src directory exists" || { echo "::error::src directory missing"; exit 1; }
-        [ -d config/build ] && echo "✓ config/build exists" || { echo "::error::config/build missing"; exit 1; }
-        echo "::endgroup::"
+        [ -f webpack.config.ts ] || { echo "webpack.config.ts missing"; exit 1; }
+        [ -d src ] || { echo "src directory missing"; exit 1; }
 
     - name: Run TypeScript check
       run: npx tsc --noEmit --skipLibCheck
@@ -61,19 +53,19 @@ jobs:
         CI: true
 
     - name: Run unit tests
-      run: npm run test:unit -- --ci --coverage --maxWorkers=2
+      run: npm run test:unit -- --ci --coverage
 
     - name: Run linters
       run: |
         npm run lint:ts
         npm run lint:scss
 
-    - name: Upload coverage
+    - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       if: success()
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: production-artifacts
