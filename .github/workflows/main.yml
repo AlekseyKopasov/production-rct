@@ -19,7 +19,11 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          npm run build:prod
+        env:
+          NODE_ENV: production
 
       # Добавляем установку TypeScript и ts-node
       - name: Install TypeScript dependencies
